@@ -1,15 +1,15 @@
-import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from dotenv import load_dotenv
+import os
 
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
+# Use environment variables for safety
+DATABASE_URL = os.getenv("DATABASE_URL", "mysql+pymysql://root:Chidhu%40123@localhost/project")
 
-engine = create_engine(DATABASE_URL, pool_pre_ping=True, future=True)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+engine = create_engine(DATABASE_URL, echo=True)  # echo=True for SQL logging in dev
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
+# Dependency for DB session
 def get_db():
     db = SessionLocal()
     try:
